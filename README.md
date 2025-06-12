@@ -11,9 +11,14 @@
   </p>
 </div>
 
-<!-- WICHTIG: Ersetze dieses Platzhalterbild durch einen echten Screenshot oder ein animiertes GIF deiner App! -->
 <div align="center">
-  <img src="https://via.placeholder.com/800x500.png?text=App+Screenshot+or+GIF+here" alt="App Screenshot">
+  <img src="docs/intro.gif" alt="Unfold App Intro GIF" width="600"><br>
+  <div>
+    <img src="docs/main_white.png" alt="Main Screen (Light Mode)" height="160" style="margin:8px;">
+    <img src="docs/complete_black_r.png" alt="Results Screen (Dark Mode) - R" height="160" style="margin:8px;">
+    <img src="docs/complete_black_e.png" alt="Results Screen (Dark Mode) - E" height="160" style="margin:8px;">
+    <img src="docs/complete_black_c.png" alt="Results Screen (Dark Mode) - C" height="160" style="margin:8px;">
+  </div>
   <br>
   <em>(Pictured: Main screen in light mode and the results screen in dark mode)</em>
 </div>
