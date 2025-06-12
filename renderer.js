@@ -1,23 +1,33 @@
 let allLocaleData = {};
 let currentLang = 'en'; // Default language
+let lastLogEntries = null; // Store the last log entries to re-render results on language change
 
 // This function applies the currently selected translations to the UI
 function applyTranslations() {
     const localeData = allLocaleData[currentLang];
     if (!localeData) return;
 
+    // Set text content for elements with data-i18n-key
     document.querySelectorAll('[data-i18n-key]').forEach(elem => {
         const key = elem.getAttribute('data-i18n-key');
         if (localeData[key]) {
-            const target = elem.querySelector('span') || elem;
-            target.textContent = localeData[key];
+            elem.textContent = localeData[key];
         }
     });
 
+    // Set tooltip text for elements with data-i18n-tooltip-key
     document.querySelectorAll('[data-i18n-tooltip-key]').forEach(elem => {
         const key = elem.getAttribute('data-i18n-tooltip-key');
         if (localeData[key]) {
             elem.dataset.tooltip = localeData[key];
+        }
+    });
+    
+    // Set aria-label for accessibility
+    document.querySelectorAll('[data-i18n-aria-key]').forEach(elem => {
+        const key = elem.getAttribute('data-i18n-aria-key');
+        if (localeData[key]) {
+            elem.setAttribute('aria-label', localeData[key]);
         }
     });
 }
@@ -34,6 +44,12 @@ function setLanguage(lang) {
     document.querySelectorAll('.lang-link').forEach(link => {
         link.classList.toggle('active', link.dataset.lang === lang);
     });
+
+    // If the results view is visible, re-render it to update its translations
+    const resultsView = document.getElementById('results-view');
+    if (!resultsView.classList.contains('hidden') && lastLogEntries) {
+        displayResults(lastLogEntries);
+    }
 }
 
 // Main logic starts after the DOM is loaded
@@ -41,7 +57,17 @@ window.addEventListener('DOMContentLoaded', async () => {
     // --- Initialization ---
     allLocaleData = await window.electronAPI.getAllLocales();
     
-    // Determine initial language: 1. Stored choice, 2. System language, 3. Default 'en'
+    const appVersion = await window.electronAPI.getAppVersion();
+    document.getElementById('app-version').textContent = `v${appVersion}`;
+    
+    // ===================================================================
+    // HIER IST DIE NEUE LOGIK: Theme laden
+    // ===================================================================
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+
     const storedLang = localStorage.getItem('user-lang');
     const systemLang = navigator.language.split('-')[0];
     
@@ -61,7 +87,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const progressBar = document.getElementById('progress-bar');
     const statusText = document.getElementById('status-text');
     const themeSwitcher = document.querySelector('.theme-switcher');
-    const aboutLink = document.getElementById('about-link'); // Added selector for About link
+    const aboutLink = document.getElementById('about-link');
 
     const resultsView = document.getElementById('results-view');
     const resultsSummary = document.getElementById('results-summary');
@@ -75,6 +101,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     // --- Event Listeners ---
     themeSwitcher.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
+        // ===================================================================
+        // HIER IST DIE NEUE LOGIK: Theme speichern
+        // ===================================================================
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
+        }
     });
 
     document.querySelectorAll('.lang-link').forEach(link => {
@@ -84,10 +118,9 @@ window.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Event listener for the new "About" link
     aboutLink.addEventListener('click', (e) => {
         e.preventDefault();
-        window.electronAPI.showAboutWindow();
+        window.electronAPI.showAboutWindow(currentLang);
     });
 
     selectFolderBtn.addEventListener('click', async () => {
@@ -126,18 +159,27 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // --- Results View Logic ---
     function displayResults(logEntries) {
+        lastLogEntries = logEntries; // Store logs for re-rendering
         const localeData = allLocaleData[currentLang];
         const stats = { COPIED: 0, RENAMED: 0, ERROR: 0 };
         const groupedLogs = { COPIED: [], RENAMED: [], ERROR: [] };
+        const conflictGroups = {};
 
         logEntries.forEach(log => {
             if (stats[log.type] !== undefined) {
                 stats[log.type]++;
                 groupedLogs[log.type].push(log);
+                
+                if (log.type === 'RENAMED') {
+                    if (!conflictGroups[log.originalName]) {
+                        conflictGroups[log.originalName] = [];
+                    }
+                    conflictGroups[log.originalName].push(log);
+                }
             }
         });
 
-        resultsSummary.textContent = `✅ ${stats.COPIED} ${localeData.resultsSummary} 🔵 ${stats.RENAMED} ${localeData.resultsSummaryRenamed} ❌ ${stats.ERROR} ${localeData.resultsSummaryErrors}`;
+        resultsSummary.textContent = `✅ ${stats.COPIED} ${localeData.resultsSummaryCopied} | 🔵 ${stats.RENAMED} ${localeData.resultsSummaryRenamed} | ❌ ${stats.ERROR} ${localeData.resultsSummaryErrors}`;
         logDetailsContainer.innerHTML = '';
 
         const createLogSection = (count, typeKey, logs, typeClass, formatter) => {
@@ -145,18 +187,42 @@ window.addEventListener('DOMContentLoaded', async () => {
             
             const details = document.createElement('details');
             details.className = typeClass;
-            if (typeClass !== 'error-log') details.open = true;
+            details.open = true;
 
             const summary = document.createElement('summary');
             summary.textContent = `${localeData[typeKey]} (${count})`;
             
             const ul = document.createElement('ul');
             ul.className = 'log-list';
-            logs.forEach(log => {
-                const li = document.createElement('li');
-                li.innerHTML = formatter(log);
-                ul.appendChild(li);
-            });
+
+            if (typeKey === 'logRenamed') {
+                Object.keys(conflictGroups).forEach(originalName => {
+                    const groupDetails = document.createElement('details');
+                    groupDetails.className = 'conflict-group';
+                    groupDetails.open = true;
+
+                    const groupSummary = document.createElement('summary');
+                    groupSummary.innerHTML = `Original Name: <code>${originalName}</code> (${conflictGroups[originalName].length} conflicts)`;
+                    
+                    const conflictUl = document.createElement('ul');
+                    conflictUl.className = 'log-list';
+                    conflictGroups[originalName].forEach(log => {
+                        const conflictLi = document.createElement('li');
+                        conflictLi.innerHTML = formatter(log);
+                        conflictUl.appendChild(conflictLi);
+                    });
+
+                    groupDetails.appendChild(groupSummary);
+                    groupDetails.appendChild(conflictUl);
+                    ul.appendChild(groupDetails);
+                });
+            } else {
+                logs.forEach(log => {
+                    const li = document.createElement('li');
+                    li.innerHTML = formatter(log);
+                    ul.appendChild(li);
+                });
+            }
 
             details.appendChild(summary);
             details.appendChild(ul);
@@ -167,7 +233,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             log => `<code>${log.to}</code>`
         );
         createLogSection(stats.RENAMED, 'logRenamed', groupedLogs.RENAMED, 'renamed-log',
-            log => `<code>${log.to}</code> ← <code>${log.from}</code>`
+            log => `<code>${log.to}</code> <span style="color: var(--icon-color)">← from <code>${log.from}</code></span>`
         );
         createLogSection(stats.ERROR, 'logErrors', groupedLogs.ERROR, 'error-log',
             log => `File: <code>${log.from}</code><br>Error: ${log.message}`
@@ -206,9 +272,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     function resetMainView() {
         setProcessingState(false);
         startBtn.disabled = true;
-        selectedFolderPath.textContent = '';
+        selectedFolderPath.innerHTML = ' '; 
         currentFolderPath = null;
         finalOutputPath = null;
+        lastLogEntries = null; // Clear stored logs
     }
 
     // Finally, set the initial language for the very first time

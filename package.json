@@ -1,6 +1,6 @@
 {
   "name": "unfold",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Unfolds a nested folder structure into a single directory.",
   "main": "main.js",
   "scripts": {
@@ -9,10 +9,12 @@
   },
   "keywords": [],
   "author": {
-    "name": "x3kim",
-    "email": "kimjanlim@googlemail.com"
+    "name": "x3kim"
   },
-  "license": "ISC",
+  "license": "MIT",
+  "dependencies": {
+    "electron-store": "^7.0.3"
+  },
   "devDependencies": {
     "electron": "^28.0.0",
     "electron-builder": "^24.9.1"
@@ -28,7 +30,7 @@
       "style.css",
       "logo.png",
       "locales/**/*",
-      "readme.html",
+      "about.html",
       "readme-style.css"
     ],
     "win": {

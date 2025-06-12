@@ -23,11 +23,12 @@
 ## 🚀 Key Features
 
 *   📂 **Effortless Folder Flattening**: Simply select a folder, and Unfold recursively finds every file to bring it to the top level.
-*   ⚠️ **Smart Conflict Handling**: If files with the same name exist in different subfolders, Unfold intelligently renames them (e.g., `[conflict-1]-image.jpg`) so you never lose a file.
-*   📝 **Detailed & Interactive Logging**: After every operation, you get a beautiful, interactive summary right within the app. See exactly which files were copied, renamed, or encountered errors, all color-coded for clarity.
-*   💾 **Markdown Documentation**: A detailed `documentation.md` file is automatically generated in the output folder, providing a permanent record of the operation.
-*   🎨 **Modern & Minimalist UI**: A clean, intuitive interface with both **Light & Dark modes** to match your system's theme.
-*   🔒 **Safe & Non-Destructive**: Your original files and folders are **never** modified. Unfold works exclusively on copies in a newly created output folder (e.g., `MyFolder_unfolded`).
+*   ⚠️ **Smart Conflict Handling**: Intelligently renames files with duplicate names (e.g., `[conflict-1]-image.jpg`) so you never lose a file.
+*   📝 **Detailed & Interactive Logging**: Get a beautiful, interactive, and fully translated summary right within the app after every operation.
+*   💾 **Markdown Documentation**: A detailed `documentation.md` file is automatically generated in the output folder.
+*   🎨 **Persistent UI Settings**: The app remembers your chosen **window size**, **position**, and **light/dark theme** between sessions.
+*   🌍 **Fully Localized**: Complete interface, including the "About" page, is available in English & German with an easy-to-use language switcher.
+*   🖥️ **Cross-Platform**: Works on Windows, macOS, and Linux.
 
 ## ⚙️ Getting Started
 
