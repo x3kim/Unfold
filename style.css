@@ -62,7 +62,9 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
+    overflow-y: auto;
+    padding: 10px;
 }
 
 /* Header */
@@ -229,6 +231,7 @@ body.dark-mode .icon-sun { display: block; }
 #results-summary {
     font-size: 1.1rem;
     color: var(--icon-color);
+    line-height: 1.5;
 }
 
 #log-details-container {
@@ -347,4 +350,169 @@ button.secondary:hover {
 #app-version {
     color: var(--icon-color);
     margin: 0 10px;
+}
+
+/* ====================================================== */
+/* NEUE STYLES FÜR DAS KONTROLLZENTRUM                  */
+/* ====================================================== */
+#controls-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+/* Segmented Control for Modes */
+.segmented-control {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.mode-btn {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    color: var(--icon-color);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 0.9rem;
+}
+
+.mode-btn:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+
+.mode-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+.mode-btn:hover:not(.active) {
+    background-color: var(--progress-bar-bg);
+}
+
+/* Warning Box for Move Mode */
+.warning-box {
+    background-color: rgba(220, 53, 69, 0.1); /* Lighter red background */
+    border: 1px solid var(--error-color);
+    border-radius: 8px;
+    padding: 15px;
+    color: var(--text-color);
+}
+.dark-mode .warning-box {
+    background-color: rgba(220, 53, 69, 0.2);
+}
+.warning-box p {
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Custom Checkbox Styles */
+#zip-option-wrapper,
+#open-folder-option-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    font-size: 0.9rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 20px;
+    width: 20px;
+    background-color: var(--progress-bar-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-right: 10px;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: var(--border-color);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: var(--primary-color);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.options-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Aligns checkboxes to the left */
+    gap: 10px; /* Space between the two checkboxes */
+    width: 100%;
+    padding-left: 20px; /* Some indentation to look nice */
+    box-sizing: border-box;
+}
+
+/* Styles for special summary messages in results view */
+.special-message {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    border-left-width: 5px;
+    border-left-style: solid;
+}
+
+.special-message.info {
+    background-color: rgba(0, 123, 255, 0.1);
+    border-left-color: var(--primary-color);
+}
+
+.special-message.success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left-color: var(--success-color);
+}
+
+.special-message.fatal {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left-color: var(--error-color);
 }

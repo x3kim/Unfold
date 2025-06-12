@@ -27,12 +27,17 @@
 
 ## 🚀 Key Features
 
-*   📂 **Effortless Folder Flattening**: Simply select a folder, and Unfold recursively finds every file to bring it to the top level.
-*   ⚠️ **Smart Conflict Handling**: Intelligently renames files with duplicate names (e.g., `[conflict-1]-image.jpg`) so you never lose a file.
-*   📝 **Detailed & Interactive Logging**: Get a beautiful, interactive, and fully translated summary right within the app after every operation.
-*   💾 **Markdown Documentation**: A detailed `documentation.md` file is automatically generated in the output folder.
+*   📂 **Flexible Unfold Modes**:
+    *   **Copy (Default):** Securely copies all files, leaving the originals untouched.
+    *   **Move:** First copies all files, then deletes the source folder only upon 100% success.
+    *   **Dry Run:** Simulates the entire process and provides a preview of the results without modifying a single file.
+*   ⚠️ **Intelligent Conflict Handling**: Automatically renames files with duplicate names (e.g., `[conflict-1]-image.jpg`) so you never lose a file.
+*   🗜️ **Optional ZIP Archiving**: Create a ZIP archive of the result folder right after the process with a single click.
+*   📝 **Detailed & Interactive Logs**: Get a clean, interactive, and fully translated summary right within the app, including prominent status messages.
+*   💾 **Markdown Documentation**: A detailed `documentation.md` file is automatically generated in the output folder for every operation.
 *   🎨 **Persistent UI Settings**: The app remembers your chosen **window size**, **position**, and **light/dark theme** between sessions.
-*   🌍 **Fully Localized**: Complete interface, including the "About" page, is available in English & German with an easy-to-use language switcher.
+*   🌍 **Fully Localized**: The complete user interface is available in English & German, with an easy-to-use language switcher.
+*   🛡️ **Robust & Safe**: Built-in protection mechanisms prevent the app from being run on itself or on critical system & project folders.
 *   🖥️ **Cross-Platform**: Works on Windows, macOS, and Linux.
 
 ## ⚙️ Getting Started
