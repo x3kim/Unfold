@@ -1,0 +1,48 @@
+{
+  "name": "unfold",
+  "version": "1.0.0",
+  "description": "Unfolds a nested folder structure into a single directory.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "keywords": [],
+  "author": {
+    "name": "x3kim",
+    "email": "kimjanlim@googlemail.com"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.x3kim.unfold",
+    "productName": "Unfold",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "style.css",
+      "logo.png",
+      "locales/**/*",
+      "readme.html",
+      "readme-style.css"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "logo.png"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "logo.png",
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "logo.png"
+    }
+  }
+}

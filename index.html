@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'; style-src 'self' 'unsafe-inline';">
+    <title>Unfold</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Main View -->
+        <div id="main-view">
+            <header>
+                <div class="header-line">
+                    <div class="logo-title-wrapper">
+                        <img src="./logo.png" alt="Unfold App Logo" class="app-logo">
+                        <h1 data-i18n-key="appTitle"></h1>
+                    </div>
+                    <div class="theme-switcher" data-i18n-tooltip-key="tooltipThemeSwitcher">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </div>
+                </div>
+                <p class="intro" data-i18n-key="introText"></p>
+            </header>
+            <main>
+                <buttonbutton id="select-folder-btn" title="Select Folder" aria-label="Select Folder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    <span data-i18n-key="selectFolderBtn"></span>
+                </button>
+                <p id="selected-folder-path" class="path-display"></p>
+                <buttonbutton id="start-btn" disabled title="Start">
+                    <span data-i18n-key="startBtn"></span>
+                </button>
+            </main>
+            <footer id="status-area" class="hidden">
+                <div class="progress-bar-container">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+                <p id="status-text"></p>
+            </footer>
+        </div>
+
+        <!-- Results View -->
+        <div id="results-view" class="hidden">
+            <header>
+                <div class="header-line">
+                    <h2 data-i18n-key="resultsTitle"></h2>
+                </div>
+                <p id="results-summary"></p>
+            </header>
+            <div id="log-details-container">
+                <!-- Log entries are dynamically inserted here -->
+            </div>
+            <div class="results-actions">
+                <buttonbutton id="open-log-btn" data-i18n-key="openLogBtn" title="Open Log"></button>
+                <buttonbutton id="back-to-main-btn" class="secondary" data-i18n-key="backBtn" title="Back">Back</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- NEW: Language Switcher Footer -->
+    <footer class="language-switcher-footer">
+        <!-- NEU: About-Link hinzugefügt -->
+        <a href="#" id="about-link">About</a>
+        <span class="lang-separator">|</span>
+        <a href="#" class="lang-link" data-lang="en">English</a>
+        <span class="lang-separator">|</span>
+        <a href="#" class="lang-link" data-lang="de">Deutsch</a>
+    </footer>
+
+    <script defer src="./renderer.js"></script>
+</body>
+</html>

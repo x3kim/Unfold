@@ -1,0 +1,18 @@
+{
+  "appTitle": "Unfold",
+  "introText": "Select a folder. The app will unfold its structure by copying all contained files into a single, new folder.",
+  "selectFolderBtn": "Select Folder",
+  "startBtn": "Start Process",
+  "processingStatus": "Processing:",
+  "analyzingStatus": "Analyzing folder structure...",
+  "resultsTitle": "Process Complete",
+  "resultsSummary": "Copied |",
+  "resultsSummaryRenamed": "Renamed |",
+  "resultsSummaryErrors": "Errors",
+  "logCopied": "Copied",
+  "logRenamed": "Renamed",
+  "logErrors": "Errors",
+  "openLogBtn": "Open Log File",
+  "backBtn": "Back",
+  "tooltipThemeSwitcher": "Toggle Dark/Light Mode"
+}

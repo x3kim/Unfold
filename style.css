@@ -1,0 +1,333 @@
+/* General Setup */
+:root {
+    --bg-color: #f0f2f5;
+    --text-color: #333;
+    --primary-color: #007bff;
+    --primary-hover-color: #0056b3;
+    --card-bg-color: #ffffff;
+    --border-color: #ddd;
+    --progress-bar-bg: #e9ecef;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --disabled-color: #ccc;
+    --icon-color: #555;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --primary-color: #3f92ff;
+    --primary-hover-color: #62aaff;
+    --card-bg-color: #2c2c2c;
+    --border-color: #444;
+    --progress-bar-bg: #3a3a3a;
+    --icon-color: #aaa;
+}
+
+/* Wichtig: Body und HTML nehmen die volle Höhe ein */
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Verhindert Scrollbalken am Body */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    background-color: var(--card-bg-color);
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    box-sizing: border-box; /* Padding wird in die Höhe/Breite eingerechnet */
+    
+    /* NEU: Flexbox-Container für die Ansichten */
+    display: flex;
+    flex-direction: column;
+}
+
+/* NEU: Die Ansichten sollen den Platz füllen */
+#main-view, #results-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-width: 550px; /* Maximale Breite für den Inhalt */
+    margin: 0 auto;   /* Zentriert den Inhalt horizontal */
+}
+
+#main-view > main {
+    flex-grow: 1; /* Der Hauptbereich wächst, um den Platz zu füllen */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Zentriert den Inhalt vertikal */
+}
+
+/* Header */
+.header-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.logo-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.app-logo {
+    width: 64px;
+    height: 64px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2rem;
+    text-align: left;
+}
+
+.intro {
+    font-size: 1rem;
+    color: var(--icon-color);
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Buttons */
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+button:hover:not(:disabled) {
+    background-color: var(--primary-hover-color);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+#start-btn {
+    margin-top: 15px;
+}
+
+/* Path Display */
+.path-display {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    word-break: break-all;
+    font-family: "Courier New", Courier, monospace;
+    min-height: 20px;
+    text-align: left;
+}
+
+/* Status & Progress */
+.hidden {
+    display: none !important;
+}
+
+#status-area {
+    margin-top: 20px;
+    min-height: 50px; /* Gibt dem Footer eine feste Mindesthöhe */
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: var(--progress-bar-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 16px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.4s ease-in-out, background-color 0.4s;
+}
+
+.progress-bar.success { background-color: var(--success-color); }
+.progress-bar.error { background-color: var(--error-color); }
+
+#status-text {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    height: 20px;
+    color: var(--icon-color);
+    text-align: center;
+}
+
+/* Theme Switcher & Tooltip */
+.theme-switcher {
+    cursor: pointer;
+    color: var(--icon-color);
+}
+.theme-switcher svg { display: none; }
+body:not(.dark-mode) .icon-moon { display: block; }
+body.dark-mode .icon-sun { display: block; }
+
+[data-tooltip] {
+    position: relative;
+}
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 10;
+}
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- Stile für die Ergebnis-Ansicht --- */
+#results-view {
+    text-align: left;
+}
+
+#results-view header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#results-view h2 {
+    margin: 0;
+    color: var(--success-color);
+}
+
+#results-summary {
+    font-size: 1.1rem;
+    color: var(--icon-color);
+}
+
+#log-details-container {
+    flex-grow: 1; /* Lässt die Log-Box den verfügbaren Platz füllen */
+    overflow-y: auto;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+details {
+    margin-bottom: 10px;
+    border-left: 3px solid var(--border-color);
+    padding-left: 10px;
+}
+
+details[open] {
+    padding-bottom: 10px;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    list-style: none;
+}
+summary::-webkit-details-marker { display: none; }
+
+.log-list {
+    list-style-type: none;
+    padding-left: 15px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--icon-color);
+}
+
+.log-list li {
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+
+.log-list code {
+    background-color: var(--progress-bar-bg);
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* Farbcodierung */
+details.copied-log { border-left-color: var(--success-color); }
+details.renamed-log { border-left-color: var(--primary-color); }
+details.error-log { border-left-color: var(--error-color); }
+
+.results-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+button.secondary {
+    background-color: var(--icon-color);
+}
+button.secondary:hover {
+    background-color: var(--text-color);
+}
+
+/* Language Switcher */
+.language-switcher-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background-color: var(--bg-color);
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.8rem;
+    z-index: 100;
+}
+
+.lang-link {
+    color: var(--icon-color);
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color 0.2s;
+}
+
+.lang-link:hover {
+    color: var(--primary-color);
+}
+
+.lang-link.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.lang-separator {
+    color: var(--border-color);
+}

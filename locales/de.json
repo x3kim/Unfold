@@ -1,0 +1,18 @@
+{
+  "appTitle": "Unfold",
+  "introText": "Wähle einen Ordner aus. Die App entfaltet dessen Struktur, indem sie alle enthaltenen Dateien in einen einzigen, neuen Ordner kopiert.",
+  "selectFolderBtn": "Ordner auswählen",
+  "startBtn": "Prozess starten",
+  "processingStatus": "Verarbeite:",
+  "analyzingStatus": "Analysiere Ordnerstruktur...",
+  "resultsTitle": "Prozess abgeschlossen",
+  "resultsSummary": "Kopiert |",
+  "resultsSummaryRenamed": "Umbenannt |",
+  "resultsSummaryErrors": "Fehler",
+  "logCopied": "Kopiert",
+  "logRenamed": "Umbenannt",
+  "logErrors": "Fehler",
+  "openLogBtn": "Log-Datei öffnen",
+  "backBtn": "Zurück",
+  "tooltipThemeSwitcher": "Dark/Light Mode wechseln"
+}
