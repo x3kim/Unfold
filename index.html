@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'; style-src 'self' 'unsafe-inline';">
     <title>Unfold</title>
     <link rel="stylesheet" href="style.css">
@@ -25,12 +24,13 @@
                 <p class="intro" data-i18n-key="introText"></p>
             </header>
             <main>
-                <buttonbutton id="select-folder-btn" title="Select Folder" aria-label="Select Folder">
+                <button id="select-folder-btn" data-i18n-aria-key="selectFolderBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                     <span data-i18n-key="selectFolderBtn"></span>
                 </button>
-                <p id="selected-folder-path" class="path-display"></p>
-                <buttonbutton id="start-btn" disabled title="Start">
+                <p id="selected-folder-path" class="path-display"> </p>
+                <button id="start-btn" data-i18n-aria-key="startBtn" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-play"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                     <span data-i18n-key="startBtn"></span>
                 </button>
             </main>
@@ -54,20 +54,21 @@
                 <!-- Log entries are dynamically inserted here -->
             </div>
             <div class="results-actions">
-                <buttonbutton id="open-log-btn" data-i18n-key="openLogBtn" title="Open Log"></button>
-                <buttonbutton id="back-to-main-btn" class="secondary" data-i18n-key="backBtn" title="Back">Back</button>
+                <!-- KORREKTUR: span für Übersetzung hinzugefügt -->
+                <button id="open-log-btn"><span data-i18n-key="openLogBtn"></span></button>
+                <button id="back-to-main-btn" class="secondary"><span data-i18n-key="backBtn"></span></button>
             </div>
         </div>
     </div>
     
-    <!-- NEW: Language Switcher Footer -->
     <footer class="language-switcher-footer">
-        <!-- NEU: About-Link hinzugefügt -->
         <a href="#" id="about-link">About</a>
         <span class="lang-separator">|</span>
         <a href="#" class="lang-link" data-lang="en">English</a>
         <span class="lang-separator">|</span>
         <a href="#" class="lang-link" data-lang="de">Deutsch</a>
+        <span class="lang-separator">|</span>
+        <span id="app-version"></span>
     </footer>
 
     <script defer src="./renderer.js"></script>

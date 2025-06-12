@@ -1,8 +1,13 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const Store = require('electron-store');
+
+// Initialize the store
+const store = new Store();
 
 let mainWindow;
+const allLocales = loadAllLocales(); // Load all languages once on startup
 
 // Function to load ALL available language files from the 'locales' directory.
 function loadAllLocales() {
@@ -12,7 +17,7 @@ function loadAllLocales() {
         const files = fs.readdirSync(localesDir);
         for (const file of files) {
             if (file.endsWith('.json')) {
-                const langCode = path.basename(file, '.json'); // e.g., 'en'
+                const langCode = path.basename(file, '.json');
                 const data = fs.readFileSync(path.join(localesDir, file), 'utf-8');
                 locales[langCode] = JSON.parse(data);
             }
@@ -24,11 +29,30 @@ function loadAllLocales() {
 }
 
 function createWindow() {
+    // 1. Define defaults and maximums using your chosen values
+    const defaultWidth = 600;
+    const defaultHeight = 500;
+    const maxWidth = 1200;
+    const maxHeight = 1000;
+
+    // 2. Load the last window state from the store, but only care about size
+    const windowBounds = store.get('windowBounds', {
+        width: defaultWidth,
+        height: defaultHeight
+    });
+
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 700,
+        // Use the saved size, or the defaults.
+        // By omitting x and y, Electron will center the window by default.
+        width: windowBounds.width,
+        height: windowBounds.height,
+        
+        // Apply our constraints
         minWidth: 600,
         minHeight: 500,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -36,27 +60,52 @@ function createWindow() {
         },
         icon: path.join(__dirname, 'logo.png')
     });
+
+    // 3. Save the window's state when it's moved or resized
+    // Using 'resized' and 'moved' events is more reliable than 'close'
+    const saveBounds = () => {
+        store.set('windowBounds', mainWindow.getBounds());
+    };
+    mainWindow.on('resized', saveBounds);
+    mainWindow.on('moved', saveBounds);
+
     mainWindow.loadFile('index.html');
 }
 
 let aboutWindow;
 
-function createAboutWindow() {
-    // If the window already exists, focus it
+function createAboutWindow(lang) {
     if (aboutWindow) {
         aboutWindow.focus();
         return;
     }
 
+    const templatePath = path.join(__dirname, 'about.html');
+    let htmlTemplate = fs.readFileSync(templatePath, 'utf-8');
+    
+    const stylePath = path.join(__dirname, 'readme-style.css');
+    const styles = fs.readFileSync(stylePath, 'utf-8');
+    htmlTemplate = htmlTemplate.replace('{{styles}}', styles);
+
+    const logoPath = path.join(__dirname, 'logo.png');
+    const logoBuffer = fs.readFileSync(logoPath);
+    const logoBase64 = logoBuffer.toString('base64');
+    const logoSrc = `data:image/png;base64,${logoBase64}`;
+    htmlTemplate = htmlTemplate.replace('{{logoSrc}}', logoSrc);
+
+    const translations = allLocales[lang] || allLocales['en'];
+
+    for (const key in translations) {
+        const placeholder = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
+        htmlTemplate = htmlTemplate.replace(placeholder, translations[key]);
+    }
+
     aboutWindow = new BrowserWindow({
         width: 800,
         height: 750,
-        title: 'About Unfold',
-        parent: mainWindow, // Makes it a child of the main window
-        modal: true,         // Blocks interaction with the parent window
-        resizable: true,     // Let users resize it
-        minimizable: false,
-        maximizable: false,
+        title: translations.aboutTitle || 'About Unfold',
+        parent: mainWindow,
+        modal: process.platform === 'darwin' ? false : true,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -64,28 +113,40 @@ function createAboutWindow() {
         icon: path.join(__dirname, 'logo.png')
     });
 
-    aboutWindow.loadFile('readme.html');
-    aboutWindow.setMenu(null); // Remove the default menu
+    aboutWindow.loadURL('data:text/html;charset=UTF-8,' + encodeURIComponent(htmlTemplate));
+    aboutWindow.setMenu(null); 
 
-    // Clean up the reference when the window is closed
     aboutWindow.on('closed', () => {
         aboutWindow = null;
     });
 }
 
 app.whenReady().then(createWindow);
+
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
+
 app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
 });
 
 // --- IPC Handlers ---
 
-// Provide all loaded locale data to the renderer process
+ipcMain.handle('get-app-version', () => {
+    return app.getVersion();
+});
+
 ipcMain.handle('get-all-locales', () => {
-    return loadAllLocales();
+    return allLocales;
+});
+
+ipcMain.on('show-about-window', (event, lang) => {
+    createAboutWindow(lang);
 });
 
 ipcMain.handle('dialog:openDirectory', async () => {
@@ -95,13 +156,8 @@ ipcMain.handle('dialog:openDirectory', async () => {
     return canceled ? null : filePaths[0];
 });
 
-// ... Der Rest der Datei bleibt exakt gleich wie in der vorherigen Version ...
 ipcMain.on('shell:openPath', (event, filePath) => {
     shell.openPath(filePath);
-});
-
-ipcMain.on('show-about-window', () => {
-    createAboutWindow();
 });
 
 ipcMain.on('unfold-directory', async (event, sourcePath) => {
@@ -109,7 +165,9 @@ ipcMain.on('unfold-directory', async (event, sourcePath) => {
     const logEntries = [];
 
     try {
-        if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath);
+        if (!fs.existsSync(outputPath)) {
+            fs.mkdirSync(outputPath);
+        }
 
         const allFiles = [];
         const nameMap = new Map();
@@ -131,7 +189,9 @@ ipcMain.on('unfold-directory', async (event, sourcePath) => {
         
         const conflicts = new Set();
         nameMap.forEach((count, name) => {
-            if (count > 1) conflicts.add(name);
+            if (count > 1) {
+                conflicts.add(name);
+            }
         });
         
         const conflictCounters = new Map();
@@ -145,7 +205,7 @@ ipcMain.on('unfold-directory', async (event, sourcePath) => {
                 const ext = path.extname(file.name);
                 const baseName = path.basename(file.name, ext);
                 destName = `[conflict-${counter}]-${baseName}${ext}`;
-                logEntries.push({ type: 'RENAMED', from: file.path, to: destName });
+                logEntries.push({ type: 'RENAMED', from: file.path, to: destName, originalName: file.name });
             } else {
                 logEntries.push({ type: 'COPIED', from: file.path, to: destName });
             }
@@ -182,7 +242,9 @@ function generateMarkdownLog(source, dest, logs) {
     md += `*   **Date:** ${new Date().toLocaleString()}\n\n`;
 
     const grouped = logs.reduce((acc, log) => {
-        if (!acc[log.type]) acc[log.type] = [];
+        if (!acc[log.type]) {
+            acc[log.type] = [];
+        }
         acc[log.type].push(log);
         return acc;
     }, {});
