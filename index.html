@@ -29,37 +29,6 @@
                     <span data-i18n-key="selectFolderBtn"></span>
                 </button>
                 <p id="selected-folder-path" class="path-display"> </p>
-
-                <div id="controls-wrapper" class="hidden">
-                    <div id="unfold-modes" class="segmented-control">
-                        <button class="mode-btn active" data-mode="copy" data-i18n-key="modeCopy">📂 Kopieren</button>
-                        <button class="mode-btn" data-mode="dry-run" data-i18n-key="modeDryRun">🔬 Trockenlauf</button>
-                        <button class="mode-btn" data-mode="move" data-i18n-key="modeMove">🔥 Verschieben</button>
-                    </div>
-
-                    <div id="move-warning" class="hidden warning-box">
-                        <p data-i18n-key="moveModeDescription"></p>
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="move-confirm-checkbox">
-                            <span class="checkmark"></span>
-                            <span data-i18n-key="moveModeConfirm"></span>
-                        </label>
-                    </div>
-
-                    <div class="options-wrapper">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="zip-checkbox">
-                            <span class="checkmark"></span>
-                            <span data-i18n-key="zipOption"></span>
-                        </label>
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="open-folder-checkbox">
-                            <span class="checkmark"></span>
-                            <span data-i18n-key="openOutputFolderOption"></span>
-                        </label>
-                    </div>
-                </div>
-
                 <button id="start-btn" data-i18n-aria-key="startBtn" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-play"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                     <span data-i18n-key="startBtn"></span>
@@ -85,7 +54,7 @@
                 <!-- Log entries are dynamically inserted here -->
             </div>
             <div class="results-actions">
-                <button id="open-output-folder-btn" class="hidden"><span data-i18n-key="openOutputFolderBtn"></span></button>
+                <!-- KORREKTUR: span für Übersetzung hinzugefügt -->
                 <button id="open-log-btn"><span data-i18n-key="openLogBtn"></span></button>
                 <button id="back-to-main-btn" class="secondary"><span data-i18n-key="backBtn"></span></button>
             </div>
